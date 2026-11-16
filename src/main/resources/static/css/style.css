@@ -1,0 +1,412 @@
+/* ===================================================================
+   Personal Expense & Budget Tracker - SaaS Theme Stylesheet
+   Color Palette:
+   - Primary: Indigo (#6366F1)
+   - Secondary: Purple (#8B5CF6)
+   - Success: Green (#22C55E)
+   - Warning: Orange (#F59E0B)
+   - Danger: Red (#EF4444)
+   - Background: #F8FAFC
+   =================================================================== */
+
+:root {
+    --primary-indigo: #6366F1;
+    --primary-indigo-dark: #4F46E5;
+    --primary-indigo-light: #EEF2FF;
+    --secondary-purple: #8B5CF6;
+    --success-green: #22C55E;
+    --success-light: #DCFCE7;
+    --warning-orange: #F59E0B;
+    --warning-light: #FEF3C7;
+    --danger-red: #EF4444;
+    --danger-light: #FEE2E2;
+    --body-bg: #F8FAFC;
+    --card-bg: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-muted: #64748B;
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 80px;
+    --border-color: #E2E8F0;
+    --border-radius-lg: 16px;
+    --border-radius-md: 12px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 20px -2px rgba(99, 102, 241, 0.08);
+    --shadow-hover: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+    --transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+    background-color: var(--body-bg);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* App Shell Layout */
+.app-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: var(--sidebar-width);
+    background: #FFFFFF;
+    border-right: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1020;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition-fast);
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar.collapsed .sidebar-text,
+.sidebar.collapsed .brand-title,
+.sidebar.collapsed .sidebar-badge {
+    display: none !important;
+}
+
+.sidebar.collapsed .nav-link {
+    justify-content: center;
+    padding: 12px 0;
+}
+
+.sidebar-header {
+    padding: 24px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--border-radius-md);
+    background: linear-gradient(135deg, var(--primary-indigo), var(--secondary-purple));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.35);
+}
+
+.brand-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 16px 12px;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sidebar-nav .nav-item {
+    margin-bottom: 6px;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    color: var(--text-muted);
+    font-weight: 500;
+    border-radius: var(--border-radius-md);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.sidebar-nav .nav-link i {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: var(--primary-indigo);
+    background-color: var(--primary-indigo-light);
+    transform: translateX(4px);
+}
+
+.sidebar-nav .nav-link.active {
+    color: white;
+    background: linear-gradient(135deg, var(--primary-indigo), var(--secondary-purple));
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Main Content Area */
+.main-content {
+    flex-grow: 1;
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    transition: var(--transition-fast);
+    min-width: 0;
+}
+
+.main-content.expanded {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Top Navbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.welcome-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.welcome-subtitle {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* SaaS Card Components */
+.saas-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    padding: 24px;
+    margin-bottom: 24px;
+    transition: var(--transition-fast);
+}
+
+.saas-card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card-lift:hover {
+    transform: translateY(-4px);
+}
+
+/* Summary Metric Cards */
+.metric-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.metric-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+}
+
+.metric-income::after { background-color: var(--success-green); }
+.metric-expense::after { background-color: var(--danger-red); }
+.metric-balance::after { background-color: var(--primary-indigo); }
+.metric-budget::after { background-color: var(--warning-orange); }
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.metric-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.metric-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.metric-icon-income { background-color: var(--success-light); color: var(--success-green); }
+.metric-icon-expense { background-color: var(--danger-light); color: var(--danger-red); }
+.metric-icon-balance { background-color: var(--primary-indigo-light); color: var(--primary-indigo); }
+.metric-icon-budget { background-color: var(--warning-light); color: var(--warning-orange); }
+
+.metric-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
+    margin: 0 0 6px 0;
+}
+
+.metric-subtext {
+    font-size: 0.825rem;
+    color: var(--text-muted);
+}
+
+/* Budget Progress Bar */
+.budget-progress-container {
+    background-color: #E2E8F0;
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+    margin: 12px 0 6px 0;
+}
+
+.budget-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.8s ease-in-out;
+}
+
+/* Custom Table */
+.custom-table {
+    margin: 0;
+}
+
+.custom-table th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background-color: #F8FAFC;
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px 16px;
+}
+
+.custom-table td {
+    padding: 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.925rem;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #F8FAFC;
+}
+
+/* Custom Badges */
+.badge-pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.badge-income {
+    background-color: var(--success-light);
+    color: #15803D;
+}
+
+.badge-expense {
+    background-color: var(--danger-light);
+    color: #B91C1C;
+}
+
+/* Buttons */
+.btn-primary-indigo {
+    background: linear-gradient(135deg, var(--primary-indigo), var(--secondary-purple));
+    color: white;
+    border: none;
+    font-weight: 600;
+    border-radius: var(--border-radius-md);
+    padding: 10px 20px;
+    transition: var(--transition-fast);
+}
+
+.btn-primary-indigo:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+/* Dark Terminal & Diagnostic Log Output */
+.terminal-log-box,
+.console-log-box {
+    background-color: #0F172A;
+    color: #38BDF8;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.875rem;
+    padding: 18px;
+    border-radius: var(--border-radius-md);
+    max-height: 380px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    border: 1px solid #1E293B;
+}
+
+/* Mobile & Tablet Responsiveness */
+@media (max-width: 991.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+        box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    }
+
+    .main-content, .main-content.expanded {
+        margin-left: 0;
+        padding: 20px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .sidebar, .topbar .btn, .no-print, nav, .pagination, .modal {
+        display: none !important;
+    }
+
+    .main-content, .main-content.expanded {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .saas-card {
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+    }
+}

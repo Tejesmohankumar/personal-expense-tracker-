@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<!-- Reusable Sidebar Fragment -->
+<aside id="sidebar" class="sidebar" th:fragment="sidebar(activePage)">
+    <!-- Sidebar Header -->
+    <div class="sidebar-header">
+        <a th:href="@{/dashboard}" class="sidebar-brand">
+            <div class="brand-icon">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <div>
+                <div class="brand-title">ExpenseTracker</div>
+                <small class="text-muted" style="font-size: 0.725rem; font-weight: 600;">Personal Finance</small>
+            </div>
+        </a>
+        <button type="button" class="btn btn-sm btn-light border-0 d-none d-lg-block text-muted" id="sidebarToggleBtn" title="Toggle Sidebar">
+            <i class="bi bi-layout-sidebar-inset"></i>
+        </button>
+    </div>
+
+    <!-- Navigation Links -->
+    <ul class="sidebar-nav">
+        <li class="nav-item">
+            <a th:href="@{/dashboard}" class="nav-link" th:classappend="${activePage == 'dashboard' ? 'active' : ''}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span class="sidebar-text">Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/income}" class="nav-link" th:classappend="${activePage == 'income' ? 'active' : ''}">
+                <i class="bi bi-arrow-down-circle-fill"></i>
+                <span class="sidebar-text">Income</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/expenses}" class="nav-link" th:classappend="${activePage == 'expenses' ? 'active' : ''}">
+                <i class="bi bi-arrow-up-circle-fill"></i>
+                <span class="sidebar-text">Expenses</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/transactions}" class="nav-link" th:classappend="${activePage == 'transactions' ? 'active' : ''}">
+                <i class="bi bi-receipt-cutoff"></i>
+                <span class="sidebar-text">Transactions</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/budgets}" class="nav-link" th:classappend="${activePage == 'budgets' ? 'active' : ''}">
+                <i class="bi bi-pie-chart-fill"></i>
+                <span class="sidebar-text">Budgets</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/reports}" class="nav-link" th:classappend="${activePage == 'reports' ? 'active' : ''}">
+                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                <span class="sidebar-text">Reports</span>
+            </a>
+        </li>
+        <li class="nav-item mt-3">
+            <div class="px-3 pb-1 text-uppercase text-muted" style="font-size: 0.675rem; font-weight: 700; letter-spacing: 0.08em;">
+                <span class="sidebar-text">Preferences</span>
+            </div>
+            <a th:href="@{/settings}" class="nav-link" th:classappend="${activePage == 'settings' ? 'active' : ''}">
+                <i class="bi bi-gear-fill"></i>
+                <span class="sidebar-text">General Settings</span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+        <div class="d-flex align-items-center gap-3">
+            <div class="avatar bg-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-weight: 700;">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="sidebar-text overflow-hidden">
+                <div class="fw-semibold text-truncate" style="font-size: 0.85rem;">Personal Account</div>
+                <div class="text-muted text-truncate" style="font-size: 0.75rem;">Active Workspace</div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<!-- Flash Alerts Fragment -->
+<div th:fragment="alerts">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill text-success fs-5"></i>
+        <div th:text="${successMessage}">Success message</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i>
+        <div th:text="${errorMessage}">Error message</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${warningMessage}" class="alert alert-warning alert-dismissible fade show border-0 shadow-sm d-flex align-items-center gap-2 mb-4" role="alert">
+        <i class="bi bi-shield-exclamation text-warning fs-5"></i>
+        <div th:text="${warningMessage}">Warning message</div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
+<!-- Transaction Details Modal Fragment -->
+<div class="modal fade" id="transactionDetailsModal" tabindex="-1" aria-hidden="true" th:fragment="detailsModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-lg);">
+            <div class="modal-header border-0 pb-0">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="metric-icon-box metric-icon-balance">
+                        <i class="bi bi-file-text"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0">Transaction Audit Details</h5>
+                        <small class="text-muted">Structured financial transaction summary</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre id="polymorphicDetailsContent" class="console-log-box mb-0" style="min-height: 180px;"></pre>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

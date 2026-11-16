@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Settings | Personal Expense & Budget Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></div>
+
+    <main id="mainContent" class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <button id="mobileSidebarToggleBtn" class="btn btn-sm btn-outline-secondary d-lg-none me-2">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <h1 class="welcome-title">General Settings</h1>
+                </div>
+                <div class="welcome-subtitle">Configure your profile, financial preferences, budget alerts, and data management.</div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-light text-primary border px-3 py-2 rounded-pill">
+                    <i class="bi bi-shield-check me-1"></i> System Active
+                </span>
+            </div>
+        </header>
+
+        <!-- Flash Alerts -->
+        <div th:replace="~{fragments/sidebar :: alerts}"></div>
+
+        <!-- Profile Banner -->
+        <div class="saas-card mb-4" style="background: linear-gradient(135deg, #EEF2FF 0%, #FAF5FF 100%); border: 1px solid #E0E7FF;">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; font-size: 1.5rem; font-weight: 700;">
+                        <span th:text="${#strings.substring(settings.userName, 0, 1)}">A</span>
+                    </div>
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1" th:text="${settings.userName}">Alex Morgan</h4>
+                        <div class="text-muted small d-flex align-items-center gap-2">
+                            <span th:text="${settings.userEmail}">alex.morgan@example.com</span>
+                            <span>&bull;</span>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Personal Workspace</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="text-end">
+                        <div class="small text-muted">Total Recorded Transactions</div>
+                        <div class="fs-4 fw-bold text-primary" th:text="${totalTransactions}">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Settings Form -->
+        <form th:action="@{/settings/update}" th:object="${settings}" method="post">
+            <div class="row g-4 mb-4">
+                <!-- 1. Profile & Account Settings -->
+                <div class="col-12 col-lg-6">
+                    <div class="saas-card h-100">
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div class="metric-icon-box metric-icon-income" style="width: 38px; height: 38px; font-size: 1rem;">
+                                <i class="bi bi-person-gear"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Profile Information</h5>
+                                <small class="text-muted">Personal identity and financial target</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control border-start-0" th:field="*{userName}" placeholder="Your full name" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control border-start-0" th:field="*{userEmail}" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Monthly Target Savings</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0" th:text="*{currencySymbol}">₹</span>
+                                <input type="number" step="100" min="0" class="form-control border-start-0" th:field="*{monthlySavingsTarget}" placeholder="5000">
+                            </div>
+                            <div class="form-text small">Goal amount you aim to retain each month from your income.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold small text-muted">Default Payment Method</label>
+                            <select class="form-select" th:field="*{defaultPaymentMethod}">
+                                <option value="UPI">UPI / Instant Pay</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Net Banking">Net Banking</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Currency & Regional Preferences -->
+                <div class="col-12 col-lg-6">
+                    <div class="saas-card h-100">
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div class="metric-icon-box metric-icon-balance" style="width: 38px; height: 38px; font-size: 1rem;">
+                                <i class="bi bi-globe"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Regional & Currency</h5>
+                                <small class="text-muted">Display formatting for currency and dates</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Currency Symbol</label>
+                            <select class="form-select" th:field="*{currencySymbol}">
+                                <option value="₹">₹ - Indian Rupee (INR)</option>
+                                <option value="$">$ - US Dollar (USD)</option>
+                                <option value="€">€ - Euro (EUR)</option>
+                                <option value="£">£ - British Pound (GBP)</option>
+                                <option value="¥">¥ - Japanese Yen (JPY)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small text-muted">Currency Code</label>
+                            <input type="text" class="form-control" th:field="*{currencyCode}" placeholder="INR" maxlength="5">
+                            <div class="form-text small">Standard 3-letter ISO code for statement exports.</div>
+                        </div>
+
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold small text-muted">Date Display Format</label>
+                            <select class="form-select" th:field="*{dateFormat}">
+                                <option value="dd MMM yyyy">dd MMM yyyy (e.g. 16 Nov 2026)</option>
+                                <option value="yyyy-MM-dd">yyyy-MM-dd (e.g. 2026-11-16)</option>
+                                <option value="MM/dd/yyyy">MM/dd/yyyy (e.g. 11/16/2026)</option>
+                                <option value="dd/MM/yyyy">dd/MM/yyyy (e.g. 16/11/2026)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Budget Alerts & Threshold Notifications -->
+                <div class="col-12">
+                    <div class="saas-card">
+                        <div class="d-flex align-items-center gap-2 mb-3 pb-2 border-bottom">
+                            <div class="metric-icon-box metric-icon-budget" style="width: 38px; height: 38px; font-size: 1rem;">
+                                <i class="bi bi-bell"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold mb-0">Budget Alert Thresholds & Notifications</h5>
+                                <small class="text-muted">Configure warning triggers and automated indicators</small>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold small text-muted">Budget Warning Threshold (%)</label>
+                                <div class="input-group">
+                                    <input type="number" min="10" max="99" class="form-control" th:field="*{warningThresholdPercent}" required>
+                                    <span class="input-group-text bg-light">%</span>
+                                </div>
+                                <div class="form-text small">Visual warning indicator activates when monthly spending reaches this percentage.</div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-semibold small text-muted">Critical Alert Threshold (%)</label>
+                                <div class="input-group">
+                                    <input type="number" min="20" max="150" class="form-control" th:field="*{criticalThresholdPercent}" required>
+                                    <span class="input-group-text bg-light">%</span>
+                                </div>
+                                <div class="form-text small">Visual critical alert activates when spending nears or exceeds this limit.</div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-check form-switch p-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <label class="form-check-label fw-semibold text-dark d-block" for="alertSwitch">In-App Budget Alerts</label>
+                                        <small class="text-muted">Display badges and notifications across dashboard when limits are reached.</small>
+                                    </div>
+                                    <input class="form-check-input ms-3" type="checkbox" role="switch" id="alertSwitch" th:field="*{enableBudgetAlerts}">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-check form-switch p-0 d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <label class="form-check-label fw-semibold text-dark d-block" for="digestSwitch">Weekly Financial Digest</label>
+                                        <small class="text-muted">Automatically calculate weekly expenditure summaries in reports.</small>
+                                    </div>
+                                    <input class="form-check-input ms-3" type="checkbox" role="switch" id="digestSwitch" th:field="*{enableWeeklySummary}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Action Button -->
+            <div class="d-flex justify-content-end mb-4">
+                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 shadow-sm d-flex align-items-center gap-2">
+                    <i class="bi bi-check2-circle fs-5"></i>
+                    <span class="fw-semibold">Save General Settings</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- 4. Data Management & Storage -->
+        <h4 class="fw-bold mb-3">Data Management & Maintenance</h4>
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="saas-card h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-file-earmark-spreadsheet text-success fs-5"></i>
+                            <h6 class="fw-bold mb-0">Export Financial Records</h6>
+                        </div>
+                        <p class="small text-muted mb-3">
+                            Download a comprehensive CSV spreadsheet backup of all your recorded incomes and expenses.
+                        </p>
+                    </div>
+                    <a th:href="@{/reports/export-csv}" class="btn btn-outline-success rounded-pill w-100">
+                        <i class="bi bi-download me-1"></i> Download CSV Ledger
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="saas-card h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-arrow-counterclockwise text-primary fs-5"></i>
+                            <h6 class="fw-bold mb-0">Restore Sample Records</h6>
+                        </div>
+                        <p class="small text-muted mb-3">
+                            Reset your ledger with default starter transactions (salary, freelance, grocery, transit).
+                        </p>
+                    </div>
+                    <form th:action="@{/settings/reset-sample-data}" method="post">
+                        <button type="submit" class="btn btn-outline-primary rounded-pill w-100"
+                                onclick="return confirm('Restore default sample records? This will overwrite existing ledger entries.');">
+                            <i class="bi bi-arrow-repeat me-1"></i> Restore Sample Dataset
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-4">
+                <div class="saas-card h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <i class="bi bi-trash3 text-danger fs-5"></i>
+                            <h6 class="fw-bold mb-0">Clear All Transactions</h6>
+                        </div>
+                        <p class="small text-muted mb-3">
+                            Erase all recorded transactions to start tracking your finances completely from scratch.
+                        </p>
+                    </div>
+                    <form th:action="@{/settings/clear-all-data}" method="post">
+                        <button type="submit" class="btn btn-outline-danger rounded-pill w-100"
+                                onclick="return confirm('Are you sure you want to delete ALL transactions? This cannot be undone.');">
+                            <i class="bi bi-trash3-fill me-1"></i> Erase All Records
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. System Environment & Specifications -->
+        <div class="saas-card">
+            <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-info-circle text-primary fs-5"></i>
+                    <h6 class="fw-bold mb-0">System & Runtime Environment</h6>
+                </div>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3">
+                    <i class="bi bi-check-circle-fill me-1"></i> Operational
+                </span>
+            </div>
+            <div class="row g-3 small text-muted">
+                <div class="col-12 col-md-3">
+                    <div class="p-2 bg-light rounded border">
+                        <div class="fw-semibold text-dark">Application</div>
+                        <div>Personal Expense Tracker v1.0.0</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-2 bg-light rounded border">
+                        <div class="fw-semibold text-dark">Java Runtime</div>
+                        <div>Java <span th:text="${javaVersion}">17</span> (<span th:text="${javaVendor}">Oracle</span>)</div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-2 bg-light rounded border">
+                        <div class="fw-semibold text-dark">Operating System</div>
+                        <div><span th:text="${osName}">Windows</span></div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="p-2 bg-light rounded border">
+                        <div class="fw-semibold text-dark">Persistence Engine</div>
+                        <div>Spring Data JPA / MySQL Mode</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

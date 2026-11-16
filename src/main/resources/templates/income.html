@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Management | Personal Expense & Budget Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="app-wrapper">
+    <div th:replace="~{fragments/sidebar :: sidebar(${activePage})}"></div>
+
+    <main id="mainContent" class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <button id="mobileSidebarToggleBtn" class="btn btn-sm btn-outline-secondary d-lg-none me-2">
+                        <i class="bi bi-list fs-5"></i>
+                    </button>
+                    <h1 class="welcome-title">Income Management</h1>
+                </div>
+                <div class="welcome-subtitle">Track, categorize, and inspect all earnings and cash credits</div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addIncomeModal">
+                    <i class="bi bi-plus-circle-fill"></i>
+                    <span>Add New Income</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Alerts -->
+        <div th:replace="~{fragments/sidebar :: alerts}"></div>
+
+        <!-- Metric Summary Banner -->
+        <div class="saas-card bg-success text-white mb-4" style="background: linear-gradient(135deg, #10B981, #059669);">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                <div>
+                    <span class="text-uppercase fw-semibold" style="letter-spacing: 0.05em; font-size: 0.825rem; opacity: 0.9;">Total Registered Income</span>
+                    <h2 class="display-6 fw-bold mb-0">₹<span th:text="${#numbers.formatDecimal(totalIncome, 1, 'COMMA', 2, 'POINT')}">0.00</span></h2>
+                </div>
+                <div class="d-flex gap-2">
+                    <span class="badge bg-white text-success px-3 py-2 rounded-pill fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${#lists.size(incomeList)}">0</span> Records Listed
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="saas-card mb-4 p-3">
+            <form th:action="@{/income}" method="get" class="row g-3 align-items-center">
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="search" class="form-control border-start-0 ps-0" placeholder="Search source or notes..." th:value="${search}">
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <input type="date" name="startDate" class="form-control" th:value="${startDate}" title="Start Date">
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <input type="date" name="endDate" class="form-control" th:value="${endDate}" title="End Date">
+                </div>
+                <div class="col-12 col-md-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary w-100 rounded-pill">Filter</button>
+                    <a th:href="@{/income}" class="btn btn-light border w-auto rounded-pill" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Income Records Table -->
+        <div class="saas-card p-0 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table custom-table mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tx ID</th>
+                            <th>Source / Title</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Payment Mode</th>
+                            <th>Description</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(incomeList)}">
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="bi bi-wallet2 fs-1 d-block mb-2 text-secondary"></i>
+                                No income transactions match the current criteria.
+                            </td>
+                        </tr>
+                        <tr th:each="inc : ${incomeList}">
+                            <td>
+                                <span class="badge bg-light text-muted border" th:text="'#' + ${inc.id}">#1</span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold text-dark" th:text="${inc.title}">Salary</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill" th:text="${inc.category}">Salary</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-success fs-6">+₹<span th:text="${#numbers.formatDecimal(inc.amount, 1, 'COMMA', 2, 'POINT')}">0.00</span></span>
+                            </td>
+                            <td th:text="${inc.transactionDate}">2026-11-16</td>
+                            <td>
+                                <span class="badge bg-light text-dark border" th:text="${inc.paymentMethod}">Bank Transfer</span>
+                            </td>
+                            <td>
+                                <small class="text-muted" th:text="${inc.description != null && !inc.description.isBlank() ? inc.description : '—'}">—</small>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <button type="button" class="btn btn-light border text-primary"
+                                            data-bs-toggle="modal" data-bs-target="#editIncomeModal"
+                                            th:attr="data-id=${inc.id},data-title=${inc.title},data-amount=${inc.amount},data-category=${inc.category},data-date=${inc.transactionDate},data-payment=${inc.paymentMethod},data-description=${inc.description}"
+                                            title="Edit Income">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <a th:href="@{'/income/delete/' + ${inc.id}}" class="btn btn-light border text-danger"
+                                       onclick="return confirm('Are you sure you want to delete this income record?');" title="Delete">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal: Add Income -->
+<div class="modal fade" id="addIncomeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-lg);">
+            <form th:action="@{/income/add}" method="post">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-success"><i class="bi bi-plus-circle-fill me-2"></i>Add Income Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Income Source / Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Monthly Salary, Freelance project" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" name="amount" class="form-control" placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Income Source Category</label>
+                            <select name="category" class="form-select">
+                                <option th:each="cat : ${categories}" th:value="${cat.categoryName}" th:text="${cat.categoryName}">Salary</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Date</label>
+                            <input type="date" name="transactionDate" class="form-control" th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Payment Mode</label>
+                            <select name="paymentMethod" class="form-select">
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="Optional notes..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4">Save Income</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Edit Income -->
+<div class="modal fade" id="editIncomeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: var(--border-radius-lg);">
+            <form th:action="@{/income/edit}" method="post">
+                <input type="hidden" id="editIncomeId" name="id">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-primary"><i class="bi bi-pencil-square me-2"></i>Edit Income Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Income Source / Title <span class="text-danger">*</span></label>
+                        <input type="text" id="editIncomeTitle" name="title" class="form-control" required>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Amount (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" min="0.01" id="editIncomeAmount" name="amount" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Category</label>
+                            <select id="editIncomeCategory" name="category" class="form-select">
+                                <option th:each="cat : ${categories}" th:value="${cat.categoryName}" th:text="${cat.categoryName}">Salary</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Date</label>
+                            <input type="date" id="editIncomeDate" name="transactionDate" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Payment Mode</label>
+                            <select id="editIncomePaymentMethod" name="paymentMethod" class="form-select">
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea id="editIncomeDescription" name="description" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Update Income</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
